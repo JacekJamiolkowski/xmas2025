@@ -184,6 +184,29 @@
         transform: translate3d(-25px, 100vh, 0);
       }
     }
+    
+    .hau {
+		  position: absolute;
+		  left: 0;
+		  top: 0;
+		  transform: translate(-50%, -50%);
+		  color: #fff;
+		  font-weight: 800;
+		  font-size: 16px;
+		  letter-spacing: 0.02em;
+		  text-shadow: 0 2px 6px rgba(0,0,0,0.55);
+		  pointer-events: none;
+		  opacity: 0;
+		  animation: hau-float 2.6s ease-out forwards;
+		  z-index: 2; /* nad psem */
+		}
+		
+		@keyframes hau-float {
+		  0%   { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+		  70%  { opacity: 0.7; }
+		  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-35px); }
+		}
+    
   </style>
 </head>
 <body>
@@ -289,16 +312,22 @@
 	
 	  // parametry klatek
 	  const FRAME_W = 89;
-	  const FRAME_H = 70;
 	  const TOTAL_FRAMES = 42;
 	  const FRAME_TIME = 50; // ms
 	
 	  // zakresy (1-based)
-	  const HEAD_START = 1,  HEAD_END = 35;
-	  const TAIL_START = 36, TAIL_END = 42;
+	  const TAIL_START = 36, TAIL_END = 42;   // "idle" ogon między obrotami
+	
+	  // Segmenty 1–35
+	  const TURN_RIGHT_START = 1,  TURN_RIGHT_END = 7;     // obrót w prawo
+	  const TAIL_RIGHT_START = 8,  TAIL_RIGHT_END = 13;    // ogon patrząc w prawo (powtórki)
+	  const TURN_LEFT_A_START = 14, TURN_LEFT_A_END = 18;  // start obrotu w lewo
+	  const BARK_START = 19, BARK_END = 25;                // szczeknięcie (losowo)
+	  const TURN_LEFT_B_START = 26, TURN_LEFT_B_END = 35;  // koniec obrotu w lewo
 	
 	  function showFrame(frame1Based) {
-	    const idx = frame1Based - 1; // na 0-based
+	    const idx = frame1Based - 1;
+	    if (idx < 0 || idx >= TOTAL_FRAMES) return;
 	    const x = -idx * FRAME_W;
 	    dog.style.backgroundPosition = `${x}px 0px`;
 	  }
@@ -311,6 +340,27 @@
 	    return new Promise(r => setTimeout(r, ms));
 	  }
 	
+	  // --- HAU ---
+	  const HAU_X = 40;
+	  const HAU_Y = -5;
+	
+	  function spawnHau() {
+	    const el = document.createElement("div");
+	    el.className = "hau";
+	    el.textContent = "Hau";
+	
+	    const parent = dog.parentElement; // .art
+	    parent.appendChild(el);
+	
+	    const dogLeft = dog.offsetLeft;
+	    const dogTop  = dog.offsetTop;
+	
+	    el.style.left = (dogLeft + HAU_X) + "px";
+	    el.style.top  = (dogTop + HAU_Y) + "px";
+	
+	    el.addEventListener("animationend", () => el.remove(), { once: true });
+	  }
+	
 	  async function playRange(start, end) {
 	    for (let f = start; f <= end; f++) {
 	      showFrame(f);
@@ -318,24 +368,50 @@
 	    }
 	  }
 	
+	  async function playHeadSequence() {
+	    // 1–6: obrót w prawo
+	    await playRange(TURN_RIGHT_START, TURN_RIGHT_END);
+	
+	    // 7–14: ogon patrząc w prawo, 2–5 powtórzeń
+	    const rightTailRepeats = randInt(3, 6);
+	    for (let i = 0; i < rightTailRepeats; i++) {
+	      await playRange(TAIL_RIGHT_START, TAIL_RIGHT_END);
+	    }
+	
+	    // 15–18: start obrotu w lewo
+	    await playRange(TURN_LEFT_A_START, TURN_LEFT_A_END);
+	
+	    // szczeknięcie 19–25 tylko w 25% przypadków
+	    const doBark = Math.random() < 0.5;
+	
+	    if (doBark) {
+	      // pokaż "Hau" raz na epizod (na początku szczeknięcia)
+	      spawnHau();
+	      await playRange(BARK_START, BARK_END);
+	    }
+	
+	    // 26–35: dokończenie obrotu w lewo
+	    await playRange(TURN_LEFT_B_START, TURN_LEFT_B_END);
+	  }
+	
 	  async function animationLoop() {
 	    showFrame(TAIL_START);
 	
 	    while (true) {
-	      // 8–16 razy ogon
+	      // 36–42: ogon 8–16 razy między obrotami
 	      const repeats = randInt(8, 16);
 	      for (let i = 0; i < repeats; i++) {
 	        await playRange(TAIL_START, TAIL_END);
 	      }
 	
-	      // 1 raz głowa
-	      await playRange(HEAD_START, HEAD_END);
+	      // sekwencja głowy 1–35 z powtórkami 7–14 i losowym szczeknięciem
+	      await playHeadSequence();
 	    }
 	  }
 	
 	  animationLoop();
 	})();
 	</script>
-</body>
 
+</body>
 </html>
