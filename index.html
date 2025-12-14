@@ -207,9 +207,62 @@
 		  100% { opacity: 0; transform: translate(-50%, -50%) translateY(-35px); }
 		}
     
+		/* Domyślnie (desktop): komunikat ukryty */
+		.mobile-warning {
+		  display: none;
+		}
+		
+		/* Mobile: pokazujemy komunikat, ukrywamy kartę */
+		@media (max-width: 768px) {
+		  .card {
+		    display: none;
+		  }
+		
+		  .mobile-warning {
+		    display: flex;
+		    position: fixed;
+		    inset: 0;
+		    align-items: center;
+		    justify-content: center;
+		    padding: 24px;
+		    background: radial-gradient(ellipse at top, #16324f 0%, #041424 55%) fixed;
+		    color: white;
+		    z-index: 9999;
+		  }
+		
+		  .mobile-warning-box {
+		    max-width: 520px;
+		    width: 100%;
+		    background: rgba(255, 255, 255, 0.12);
+		    border: 1px solid rgba(255, 255, 255, 0.25);
+		    border-radius: 16px;
+		    padding: 18px 16px;
+		    backdrop-filter: blur(10px);
+		    text-align: center;
+		    box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+		  }
+		
+		  .mobile-warning-box h1 {
+		    font-size: 1.2rem;
+		    margin-bottom: 10px;
+		  }
+		
+		  .mobile-warning-box p {
+		    font-size: 1rem;
+		    line-height: 1.4;
+		    opacity: 0.95;
+		  }
+		}
+
   </style>
 </head>
 <body>
+	<div class="mobile-warning">
+	  <div class="mobile-warning-box">
+	    <h1>🎄 Ta kartka jest w wersji desktop</h1>
+	    <p>Otwórz ją proszę na komputerze (lub w trybie „strona w wersji na komputer”).</p>
+	  </div>
+	</div>
   <div class="card">
     <div class="card-inner">
 			<div class="art" aria-hidden="true">
@@ -369,19 +422,19 @@
 	  }
 	
 	  async function playHeadSequence() {
-	    // 1–6: obrót w prawo
+	    // 1–7: obrót w prawo
 	    await playRange(TURN_RIGHT_START, TURN_RIGHT_END);
 	
-	    // 7–14: ogon patrząc w prawo, 2–5 powtórzeń
+	    // 8–13: ogon patrząc w prawo, 3–6 powtórzeń
 	    const rightTailRepeats = randInt(3, 6);
 	    for (let i = 0; i < rightTailRepeats; i++) {
 	      await playRange(TAIL_RIGHT_START, TAIL_RIGHT_END);
 	    }
 	
-	    // 15–18: start obrotu w lewo
+	    // 14–18: start obrotu w lewo
 	    await playRange(TURN_LEFT_A_START, TURN_LEFT_A_END);
 	
-	    // szczeknięcie 19–25 tylko w 25% przypadków
+	    // szczeknięcie 19–25 tylko w 50% przypadków
 	    const doBark = Math.random() < 0.5;
 	
 	    if (doBark) {
