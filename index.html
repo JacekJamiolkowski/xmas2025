@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Świąteczne życzenia</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --accent: #e63946;
+      --accent-soft: #f1faee;
+      --bg-top: #041424;
+      --bg-bottom: #0b2a3b;
+      --text-main: #102a43;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+      color: var(--text-main);
+      background: radial-gradient(ellipse at top, #16324f 0%, var(--bg-top) 40%)
+                  radial-gradient(circle at bottom, #1b3a61 0%, var(--bg-bottom) 60%);
+      background: radial-gradient(ellipse at top, #16324f 0%, var(--bg-top) 40%) fixed,
+                  radial-gradient(circle at bottom, #1b3a61 0%, var(--bg-bottom) 60%) fixed;
+      background-blend-mode: screen;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .card {
+      position: relative;
+      max-width: 1000px;
+      width: 100%;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #ffd166, #ef476f, #118ab2);
+      opacity: 0.12;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .card-inner {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 16px;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .card-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+		.art {
+		  position: relative;
+		}
+		
+		.dog {
+		  position: absolute;
+		
+		  /* POZYCJA psa – dopasuj */
+		  left: 300px;
+		  bottom: 20px;
+		
+		  /* rozmiar jednej klatki */
+		  width: 89px;
+		  height: 70px;
+		
+		  /* powiększenie */
+		  transform: scale(1);
+		  transform-origin: left bottom;
+		
+		  /* spritesheet */
+		  background-image: url("lab_anim2.png");
+		  background-repeat: no-repeat;
+		
+		  /* 42 klatki POZIOMO → szerokość = 42 × 89 */
+		  background-size: 3738px 70px; /* 42 * 89 = 3738 */
+		
+		  pointer-events: none;
+		}
+
+		.card-image {
+		  width: min(500px, 100%);
+		  height: auto;
+		  display: block;
+		  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.35));
+		  border-radius: 12px; /* opcjonalnie */
+		}
+
+    .content h1 {
+      font-size: clamp(1.8rem, 2.4vw + 1.4rem, 2.4rem);
+      margin-bottom: 0.5rem;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+
+    .content h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.24em;
+      color: #6c757d;
+      margin-bottom: 0.9rem;
+    }
+
+    .content p {
+      line-height: 1.5;
+      margin-bottom: 0.6rem;
+      font-size: 0.98rem;
+    }
+
+    .content p.highlight {
+      font-weight: 600;
+      color: #1d3557;
+    }
+    
+    .footer-note {
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: #6c757d;
+      font-size: 0.98rem;
+      margin-bottom: 0.6rem;
+    }
+
+    .footer-note span {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+		.accent {
+  		color: var(--accent);
+  		font-weight: 700; /* opcjonalnie */
+		}
+
+    /* Śnieg (elementy DOM + animacja CSS) */
+    .snowflake {
+      position: fixed;
+      top: -10vh;
+      color: #ffffff;
+      font-size: 0.8rem;
+      opacity: 0.8;
+      pointer-events: none;
+      z-index: 0;
+      text-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+      will-change: transform;
+      animation-name: snow-fall;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    @keyframes snow-fall {
+      0% {
+        transform: translate3d(0, -100vh, 0);
+      }
+      50% {
+        transform: translate3d(25px, 0, 0);
+      }
+      100% {
+        transform: translate3d(-25px, 100vh, 0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="card-inner">
+			<div class="art" aria-hidden="true">
+			  <img class="card-image" src="card.png" alt="" />
+			  <div id="dog" class="dog"></div>
+			</div>
+
+      <div class="content">
+        <h2>Wesołych Świąt</h2>
+        <h1>Moje Kochane Dzieci!!!</h1>
+        <p class="highlight">
+        	Ogromnie się cieszę, że mogę Was spotkać po raz kolejny!!!
+          Niech te święta przyniosą Wam dużo radości
+          i dobrych chwil.
+        </p>
+        <p>
+          Życzę Wam zdrowia, odpoczynku od codziennego pośpiechu, chwil pełnych
+          śmiechu oraz odrobiny magii, która zostanie z Wami jeszcze dużo dłużej niż tylko
+          w te świąteczne dni.
+        </p>
+        <p>
+          Niech w nadchodzącym Nowym Roku ta tutaj Luna czuwa nad Wami, aby uśmiech nigdy Was nie opuszczał, a większe i mniejsze sukcesy  każdego dnia.
+        </p>
+
+        <div class="footer-note">
+          Z najlepszymi życzeniami, 
+          <br><span>Św. Tatołaj</span>
+        </div>
+        
+        <p class="highlight">
+        	P.S. Zapomniałbym o prezentach 😱😨
+        	<br>
+        	W sprawie szczegółów napiszcie do mnie na telegramie. Znajdźcie mnie jako: <span class="accent">@santa_bialystok_bot</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Prosty efekt spadającego śniegu oparty na elementach DOM
+    (function () {
+      const SNOWFLAKE_COUNT = 80;
+      const MIN_DURATION = 10; // sekundy
+      const MAX_DURATION = 22;
+
+      function random(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      function createSnowflake() {
+        const flake = document.createElement("span");
+        flake.className = "snowflake";
+
+        // Różne "kształty" płatków – można dopisać więcej znaków
+        const glyphs = ["❄", "✻", "✼", "✥"];
+        flake.textContent =
+          glyphs[Math.floor(Math.random() * glyphs.length)];
+
+        // Losowa pozycja startowa na osi X
+        flake.style.left = random(0, 100) + "vw";
+
+        // Rozmiar płatka
+        const size = random(0.6, 1.3);
+        flake.style.fontSize = size + "rem";
+
+        // Czas trwania animacji (wolniejsze i szybsze płatki)
+        const duration = random(MIN_DURATION, MAX_DURATION);
+        flake.style.animationDuration = duration + "s";
+
+        // Negatywne opóźnienie, żeby śnieg "już padał" po załadowaniu
+        const delay = random(-MAX_DURATION, 0);
+        flake.style.animationDelay = delay + "s";
+
+        // Subtelna zmiana przezroczystości
+        flake.style.opacity = random(0.4, 0.9).toString();
+
+        document.body.appendChild(flake);
+
+        // Po zakończeniu "pełnego" cyklu usuwamy płatek i tworzymy nowy,
+        // żeby nie zaśmiecać DOM:
+        flake.addEventListener("animationiteration", () => {
+          // przestawiamy parametry zamiast usuwać
+          flake.style.left = random(0, 100) + "vw";
+          flake.style.animationDuration =
+            random(MIN_DURATION, MAX_DURATION) + "s";
+          flake.style.opacity = random(0.4, 0.9).toString();
+        });
+      }
+
+      for (let i = 0; i < SNOWFLAKE_COUNT; i++) {
+        createSnowflake();
+      }
+    })();
+  </script>
+  
+	<script>
+	(() => {
+	  const dog = document.getElementById("dog");
+	  if (!dog) return;
+	
+	  // parametry klatek
+	  const FRAME_W = 89;
+	  const FRAME_H = 70;
+	  const TOTAL_FRAMES = 42;
+	  const FRAME_TIME = 50; // ms
+	
+	  // zakresy (1-based)
+	  const HEAD_START = 1,  HEAD_END = 35;
+	  const TAIL_START = 36, TAIL_END = 42;
+	
+	  function showFrame(frame1Based) {
+	    const idx = frame1Based - 1; // na 0-based
+	    const x = -idx * FRAME_W;
+	    dog.style.backgroundPosition = `${x}px 0px`;
+	  }
+	
+	  function randInt(min, max) {
+	    return Math.floor(Math.random() * (max - min + 1)) + min;
+	  }
+	
+	  function sleep(ms) {
+	    return new Promise(r => setTimeout(r, ms));
+	  }
+	
+	  async function playRange(start, end) {
+	    for (let f = start; f <= end; f++) {
+	      showFrame(f);
+	      await sleep(FRAME_TIME);
+	    }
+	  }
+	
+	  async function animationLoop() {
+	    showFrame(TAIL_START);
+	
+	    while (true) {
+	      // 8–16 razy ogon
+	      const repeats = randInt(8, 16);
+	      for (let i = 0; i < repeats; i++) {
+	        await playRange(TAIL_START, TAIL_END);
+	      }
+	
+	      // 1 raz głowa
+	      await playRange(HEAD_START, HEAD_END);
+	    }
+	  }
+	
+	  animationLoop();
+	})();
+	</script>
+</body>
+</html>
