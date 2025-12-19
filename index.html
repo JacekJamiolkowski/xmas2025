@@ -173,17 +173,23 @@
       animation-iteration-count: infinite;
     }
 
-    @keyframes snow-fall {
-      0% {
-        transform: translate3d(0, -100vh, 0);
-      }
-      50% {
-        transform: translate3d(25px, 0, 0);
-      }
-      100% {
-        transform: translate3d(-25px, 100vh, 0);
-      }
-    }
+		@keyframes snow-fall {
+		  0% {
+		    transform:
+		      translate3d(0, -100vh, 0)
+		      rotate(0deg);
+		  }
+		  50% {
+		    transform:
+		      translate3d(25px, 0, 0)
+		      rotate(calc(var(--spin) * 0.5));
+		  }
+		  100% {
+		    transform:
+		      translate3d(-25px, 100vh, 0)
+		      rotate(var(--spin));
+		  }
+		}
     
     .hau {
 		  position: absolute;
@@ -312,6 +318,13 @@
         return Math.random() * (max - min) + min;
       }
 
+			function randomSpin() {
+			  const min = 720;
+			  const max = 1080;
+			  const value = random(min, max);
+			  return Math.random() < 0.5 ? -value : value;
+			}
+
       function createSnowflake() {
         const flake = document.createElement("span");
         flake.className = "snowflake";
@@ -338,6 +351,10 @@
 
         // Subtelna zmiana przezroczystości
         flake.style.opacity = random(0.4, 0.9).toString();
+        
+        // LOSOWA ROTACJA
+				const spin = randomSpin();
+				flake.style.setProperty("--spin", spin + "deg");
 
         document.body.appendChild(flake);
 
